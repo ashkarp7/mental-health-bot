@@ -1,38 +1,548 @@
+/* Main App Styles */
 .App {
-  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.App-logo {
-  height: 40vmin;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Chat Messages Animation */
+.message-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.message-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+.message-exit {
+  opacity: 1;
+}
+
+.message-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+}
+
+/* Typing Indicator Animation */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #6366f1;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typing {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Voice Recording Animation */
+.recording-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* Breathing Exercise Animation */
+.breathing-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: breathe 4s infinite ease-in-out;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.breathing-inhale {
+  animation: breathe-in 4s infinite ease-in-out;
+}
+
+.breathing-exhale {
+  animation: breathe-out 4s infinite ease-in-out;
+}
+
+@keyframes breathe-in {
+  0%, 50%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes breathe-out {
+  0%, 25%, 75%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+}
+
+/* Mood Selector Hover Effects */
+.mood-button {
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+.mood-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.mood-button:active {
+  transform: scale(0.95);
+}
+
+/* Message Bubble Styles - FIXED FOR BETTER VISIBILITY */
+.message-bubble-user {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.message-bubble-ai {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+  color: #1e293b !important;
+  border: 1px solid #cbd5e1;
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble-system {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+/* Input Area Enhancements */
+.input-area {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem;
+}
+
+.input-field {
+  border: 2px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 12px 20px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  width: 100%;
+  resize: none;
+  min-height: 44px;
+  max-height: 120px;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.send-button {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.send-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.send-button:active {
+  transform: translateY(0);
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Voice Button Styles */
+.voice-button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+  margin-right: 8px;
+}
+
+.voice-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+}
+
+.voice-button.recording {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  animation: pulse 2s infinite;
+}
+
+/* Sidebar Enhancements */
+.sidebar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-tab {
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.sidebar-tab.active {
+  border-bottom-color: #6366f1;
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.sidebar-tab:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Wellness Tools */
+.wellness-tip {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.wellness-tip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Mood History Chart */
+.mood-chart {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.mood-entry {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
 }
 
-.App-link {
-  color: #61dafb;
+.mood-entry:last-child {
+  border-bottom: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.mood-emoji {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+/* Loading States */
+.loading-dots {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.loading-dots div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #6366f1;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.loading-dots div:nth-child(1) {
+  left: 8px;
+  animation: loading-dots1 0.6s infinite;
+}
+
+.loading-dots div:nth-child(2) {
+  left: 8px;
+  animation: loading-dots2 0.6s infinite;
+}
+
+.loading-dots div:nth-child(3) {
+  left: 32px;
+  animation: loading-dots2 0.6s infinite;
+}
+
+.loading-dots div:nth-child(4) {
+  left: 56px;
+  animation: loading-dots3 0.6s infinite;
+}
+
+@keyframes loading-dots1 {
+  0% {
+    transform: scale(0);
   }
-  to {
-    transform: rotate(360deg);
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes loading-dots3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes loading-dots2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 64px;
+    left: -300px;
+    height: calc(100vh - 64px);
+    width: 300px;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  
+  .breathing-circle {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .mood-button {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .input-field {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  .breathing-circle {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .mood-button {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  
+  .message-bubble {
+    max-width: 85%;
+  }
+  
+  .input-area {
+    padding: 12px;
+  }
+  
+  .send-button,
+  .voice-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Dark Mode Support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .App {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+  }
+  
+  .input-field {
+    background: #2a2a3e;
+    border-color: #4a4a6e;
+    color: white;
+  }
+  
+  .sidebar {
+    background: rgba(42, 42, 62, 0.95);
+  }
+  
+  .mood-chart {
+    background: #2a2a3e;
+  }
+  
+  /* Keep user messages readable in dark mode too */
+  .message-bubble-user {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+  }
+}
+
+/* Text Visibility Fixes */
+.input-field, textarea {
+  color: #374151 !important;
+  background-color: white !important;
+}
+
+.input-field:focus, textarea:focus {
+  color: #374151 !important;
+}
+
+.input-field::placeholder, textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Message text visibility - ENHANCED */
+.message-bubble-user {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  font-weight: 500 !important;
+}
+
+.message-bubble-user * {
+  color: #ffffff !important;
+}
+
+.message-bubble-ai {
+  color: #1e293b !important;
+}
+
+.message-bubble-ai * {
+  color: #1e293b !important;
+}
+
+/* Override dark mode for inputs */
+@media (prefers-color-scheme: dark) {
+  .input-field, textarea {
+    background-color: white !important;
+    color: #374151 !important;
+  }
+  
+  /* Ensure user messages remain visible in dark mode */
+  .message-bubble-user {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .message-bubble-user * {
+    color: #ffffff !important;
   }
 }

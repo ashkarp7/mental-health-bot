@@ -1,0 +1,31 @@
+mental-health-bot/
+├── public/
+│   ├── index.html (add Tailwind CDN here)
+│   └── favicon.ico
+├── src/
+│   ├── components/
+│   │   ├── Auth/
+│   │   │   ├── LoginForm.js
+│   │   │   └── SignUpForm.js
+│   │   ├── Chat/
+│   │   │   ├── ChatInterface.js
+│   │   │   ├── MessageBubble.js
+│   │   │   └── InputArea.js
+│   │   ├── Wellness/
+│   │   │   ├── MoodSelector.js
+│   │   │   ├── BreathingExercise.js
+│   │   │   └── WellnessTools.js
+│   │   └── UI/
+│   │       ├── Header.js
+│   │       └── Sidebar.js
+│   ├── services/
+│   │   ├── llmApi.js
+│   │   ├── voiceRecognition.js
+│   │   └── localStorage.js
+│   ├── utils/
+│   │   ├── constants.js
+│   │   └── helpers.js
+│   ├── App.js (current complete code)
+│   └── index.js
+├── package.json
+└── README.md
