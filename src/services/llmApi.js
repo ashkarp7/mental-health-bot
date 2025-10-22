@@ -87,7 +87,7 @@ const callGroqAPI = async (userMessage, currentMood, conversationHistory) => {
       'Authorization': `Bearer ${GROQ_API_KEY}`
     },
     body: JSON.stringify({
-      model: 'llama3-8b-8192', // Free Groq model
+      model: 'llama-3.3-70b-versatile', // Free Groq model
       messages: [
         {
           role: 'system',
