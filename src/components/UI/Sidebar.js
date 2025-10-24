@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentUser, logoutUser, getMoodHistory } from '../../services/localStorage';
+import { getMoodHistory } from '../../services/localStorage';
+// REMOVED: import { getChatStatistics, countWords } from '../../utils/helpers'; 
 
 const Sidebar = ({ user, isOpen, onToggle }) => {
   const [moodHistory, setMoodHistory] = useState([]);
   const [activeTab, setActiveTab] = useState('mood');
 
   useEffect(() => {
-    if (user) {
+    if (user?.email) {
       const history = getMoodHistory(user.email);
       setMoodHistory(history.slice(-7)); // Last 7 entries
     }
@@ -24,6 +25,7 @@ const Sidebar = ({ user, isOpen, onToggle }) => {
   ];
 
   const getChatStats = () => {
+    // Since we don't have the message array, we'll revert to reading from localStorage directly for a robust Sidebar
     const totalMessages = localStorage.getItem(`messages_${user?.email}`) 
       ? JSON.parse(localStorage.getItem(`messages_${user.email}`)).length 
       : 0;
@@ -32,7 +34,7 @@ const Sidebar = ({ user, isOpen, onToggle }) => {
     const daysActive = Math.ceil((new Date() - new Date(joinDate)) / (1000 * 60 * 60 * 24));
 
     return {
-      totalMessages: Math.floor(totalMessages / 2), // Divide by 2 to get user messages only
+      totalMessages: Math.floor(totalMessages / 2), 
       daysActive: Math.max(1, daysActive),
       lastActive: 'Today'
     };
@@ -43,14 +45,15 @@ const Sidebar = ({ user, isOpen, onToggle }) => {
   const randomTip = wellnessTips[Math.floor(Math.random() * wellnessTips.length)];
 
   return (
-    <div className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 z-50 ${
+    <div className={`fixed top-0 bottom-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 z-50 md:z-20 border-l border-gray-200 ${
       isOpen ? 'translate-x-0' : 'translate-x-full'
     }`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+      <div className="flex items-center justify-between p-4 pt-16 md:pt-4 border-b border-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
         <h2 className="text-lg font-semibold">Wellness Panel</h2>
+        {/* FIXED: Use onToggle prop */}
         <button
-          onClick={onToggle}
+          onClick={onToggle} 
           className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +80,7 @@ const Sidebar = ({ user, isOpen, onToggle }) => {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="h-[calc(100%-120px)] overflow-y-auto p-4"> {/* Adjusted height */}
         {activeTab === 'mood' && (
           <div>
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Recent Moods</h3>
@@ -89,12 +92,13 @@ const Sidebar = ({ user, isOpen, onToggle }) => {
                       <span className="text-2xl">{entry.emoji || '😊'}</span>
                       <div>
                         <p className="font-medium text-gray-800">
-                          {/* Fixed: Properly handle mood object */}
-                          {typeof entry.mood === 'string' 
+                          {
+                            typeof entry.mood === 'string' 
                             ? entry.mood 
                             : (entry.mood && typeof entry.mood === 'object' && entry.mood.name)
                               ? entry.mood.name 
-                              : 'Unknown'}
+                              : 'Unknown'
+                          }
                         </p>
                         <p className="text-xs text-gray-500">
                           {new Date(entry.timestamp).toLocaleDateString()}
@@ -187,5 +191,4 @@ const Sidebar = ({ user, isOpen, onToggle }) => {
   );
 };
 
-// ✅ FIXED: Added missing export default
 export default Sidebar;
