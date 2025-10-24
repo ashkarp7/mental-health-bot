@@ -16,8 +16,8 @@ function App() {
   const [currentMood, setCurrentMood] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
-  // ✅ NEW STATE: Track if a mood has been initially selected this session
-  const [hasSelectedInitialMood, setHasSelectedInitialMood] = useState(false); 
+  // ✅ NEW STATE: Set to TRUE by default to show the selector on first load
+  const [isMoodSelectionVisible, setIsMoodSelectionVisible] = useState(true); 
   
   // Initialize Guest user
   useEffect(() => {
@@ -26,23 +26,22 @@ function App() {
   }, []);
 
   const handleLogout = () => {
-    // Clear localStorage session
     logoutUser();
     
-    // Reset state to the default Guest user and clear ephemeral data
     setUser(getDefaultUser());
     setCurrentMood(null);
     setIsSidebarOpen(false);
     setShowBreathingExercise(false);
-    setHasSelectedInitialMood(false); // Reset initial mood selection
+    // ✅ Make visible on logout
+    setIsMoodSelectionVisible(true); 
     
     alert("Logged out of existing session. You are now logged in as 'Guest'.");
   };
 
   const handleMoodSelect = (mood) => {
     setCurrentMood(mood);
-    // ✅ SET INITIAL MOOD FLAG
-    setHasSelectedInitialMood(true); 
+    // ✅ HIDE selector immediately after mood is selected
+    setIsMoodSelectionVisible(false); 
     
     if (!user?.email) return;
     
@@ -57,11 +56,10 @@ function App() {
     localStorage.setItem(`mood_history_${user.email}`, JSON.stringify(existingHistory));
   };
   
-  // ✅ NEW FUNCTION: To reset mood selection from the Header/Chat area
   const handleMoodReset = () => {
     setCurrentMood(null);
-    // Note: We intentionally DO NOT reset hasSelectedInitialMood here,
-    // as we want the full selector to display ONLY at the start.
+    // ✅ SHOW selector when mood is reset
+    setIsMoodSelectionVisible(true); 
   };
 
   const toggleSidebar = () => {
@@ -96,7 +94,7 @@ function App() {
           onToggleSidebar={toggleSidebar} 
           onStartBreathing={startBreathingExercise}
           currentMood={currentMood}
-          onMoodReset={handleMoodReset} // ✅ Pass reset function to Header
+          onMoodReset={handleMoodReset} 
         />
         
         {/* Full-screen overlay for mobile sidebar */}
@@ -117,20 +115,12 @@ function App() {
           {/* Main content area */}
           <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? 'md:ml-0 md:mr-80' : 'ml-0 mr-0'}`}>
             
-            {/* ✅ EDITED LOGIC: Show Mood Selector only if a mood hasn't been selected yet */}
-            {!currentMood && !hasSelectedInitialMood && (
+            {/* ✅ SIMPLIFIED LOGIC: Show Mood Selector only if state is true */}
+            {isMoodSelectionVisible && (
               <div className="bg-white border-b border-gray-200 p-4">
                 <MoodSelector onMoodSelect={handleMoodSelect} />
               </div>
             )}
-            
-            {/* ✅ NEW: Show Mood Selector if mood is being reset */}
-            {!currentMood && hasSelectedInitialMood && (
-              <div className="bg-white border-b border-gray-200 p-4">
-                <MoodSelector onMoodSelect={handleMoodSelect} />
-              </div>
-            )}
-
             
             <div className="flex-1 overflow-hidden">
               <ChatInterface 
