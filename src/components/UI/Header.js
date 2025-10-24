@@ -1,7 +1,7 @@
 import React from 'react';
 
-// Added onToggleSidebar prop
-const Header = ({ user, onLogout, onToggleSidebar, currentMood }) => {
+// Added onMoodReset prop
+const Header = ({ user, onLogout, onToggleSidebar, currentMood, onMoodReset }) => {
   return (
     <header className="fixed w-full top-0 bg-white shadow-md border-b border-gray-200 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,11 +32,29 @@ const Header = ({ user, onLogout, onToggleSidebar, currentMood }) => {
 
           {/* User Info and Controls */}
           <div className="flex items-center space-x-4">
-            {/* Current Mood Display */}
-            {currentMood && (
-              <div className="hidden sm:flex items-center space-x-2 bg-gray-50 rounded-full px-3 py-1">
-                <span className="text-lg">{currentMood.emoji}</span>
+            {/* Current Mood Display (with Change Button) */}
+            {currentMood ? (
+              <div className="hidden sm:flex items-center space-x-2 bg-gray-50 rounded-full pr-1">
+                <span className="text-lg pl-3 py-1">{currentMood.emoji}</span>
                 <span className="text-sm text-gray-600">Feeling {currentMood.name}</span>
+                <button
+                  onClick={onMoodReset} // ✅ Reset mood when clicked
+                  className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs hover:bg-indigo-100 transition duration-200"
+                  title="Change your current mood"
+                >
+                  Change
+                </button>
+              </div>
+            ) : (
+              // Show a small prompt to set the mood if one hasn't been set, but only after the initial selection has been made
+              // This is a subtle prompt to re-engage the user if they've already set it once
+              <div className="hidden sm:flex items-center space-x-2">
+                <button
+                  onClick={onMoodReset}
+                  className="px-3 py-1 text-sm bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition duration-200"
+                >
+                  Set Mood
+                </button>
               </div>
             )}
 
@@ -95,6 +113,13 @@ const Header = ({ user, onLogout, onToggleSidebar, currentMood }) => {
           <div className="flex items-center justify-center space-x-2">
             <span className="text-lg">{currentMood.emoji}</span>
             <span className="text-sm text-gray-600">Currently feeling {currentMood.name}</span>
+            <button
+              onClick={onMoodReset} // ✅ Reset mood when clicked
+              className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs hover:bg-indigo-100 transition duration-200"
+              title="Change your current mood"
+            >
+              Change
+            </button>
           </div>
         </div>
       )}
