@@ -10,9 +10,25 @@ const MessageBubble = ({ message }) => {
   };
 
   const getMoodEmoji = (moodInput) => {
-    const moodId = typeof moodInput === 'object' ? moodInput?.id : moodInput;
-    const mood = moods.find((m) => m.id === moodId);
-    return mood ? mood.emoji : '';
+    // 1. Check if moodInput is already an object (e.g., passed as {name, emoji})
+    if (typeof moodInput === 'object' && moodInput?.name) {
+        // Find the mood key by name (e.g., 'Happy' -> 'happy')
+        const moodKey = moodInput.name.toLowerCase();
+        return moods[moodKey]?.emoji || moodInput.emoji || moods.neutral.emoji;
+    }
+
+    // 2. Assume moodInput is the key string (e.g., 'happy', 'sad')
+    const moodKey = typeof moodInput === 'string' ? moodInput.toLowerCase() : null;
+    
+    // Direct lookup using the object key (more efficient)
+    const mood = moods[moodKey];
+
+    // Fallback logic
+    if (mood) {
+        return mood.emoji;
+    }
+    
+    return moods.neutral.emoji; // Default to neutral if nothing is found
   };
 
   return (
