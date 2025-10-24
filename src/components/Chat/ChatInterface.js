@@ -16,14 +16,12 @@ const ChatInterface = ({ user, currentMood }) => {
   const [showClearModal, setShowClearModal] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // ✅ FIXED: Load user-specific messages
+  // Load user-specific messages
   useEffect(() => {
     if (!user?.email) return;
 
-    // Migrate old global messages if needed
     migrateGlobalMessagesToUser(user.email);
     
-    // Load user-specific messages
     const userMessages = getUserMessages(user.email);
     
     if (userMessages && userMessages.length > 0) {
@@ -47,7 +45,7 @@ const ChatInterface = ({ user, currentMood }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // ✅ NEW: Keyboard shortcut for clear chat (Ctrl+Shift+C)
+  // Keyboard shortcut for clear chat (Ctrl+Shift+C)
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'C') {
@@ -62,7 +60,7 @@ const ChatInterface = ({ user, currentMood }) => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [messages.length]);
 
-  // ✅ FIXED: Save messages to user-specific storage
+  // Save messages to user-specific storage
   useEffect(() => {
     if (user?.email && messages.length > 0) {
       saveUserMessages(user.email, messages);
@@ -99,7 +97,7 @@ const ChatInterface = ({ user, currentMood }) => {
       // Add bot message to state
       setMessages(prev => [...prev, botMessage]);
       
-      // ✅ FIXED: Save mood entry with proper user association
+      // Save mood entry with proper user association
       if (user?.email && currentMood) {
         const moodData = currentMood && typeof currentMood === 'object' 
           ? { name: currentMood.name, emoji: currentMood.emoji }
@@ -128,7 +126,6 @@ const ChatInterface = ({ user, currentMood }) => {
     }
   };
 
-  // ✅ ENHANCED: Advanced clear chat function with options
   const handleClearChat = () => {
     if (!user?.email || messages.length <= 1) return;
     setShowClearModal(true);
@@ -186,9 +183,10 @@ const ChatInterface = ({ user, currentMood }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg h-[600px] flex flex-col relative">
-      {/* Chat Header */}
-      <div className="border-b border-gray-200 p-4">
+    // FIXED: Ensure the container uses flex-col and h-full
+    <div className="bg-white rounded-xl shadow-lg flex flex-col relative h-full"> 
+      {/* Chat Header (Fixed at top of chat box) */}
+      <div className="border-b border-gray-200 p-4 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -203,7 +201,7 @@ const ChatInterface = ({ user, currentMood }) => {
             </div>
           </div>
           
-          {/* ✅ ENHANCED: Chat actions with better UI */}
+          {/* Chat actions with better UI */}
           <div className="flex items-center space-x-3">
             <div className="text-right">
               <p className="text-xs text-gray-500">
@@ -235,7 +233,7 @@ const ChatInterface = ({ user, currentMood }) => {
         </div>
       </div>
       
-      {/* Messages Area */}
+      {/* Messages Area (FIXED: Added overflow-y-auto and flex-1 to allow scrolling) */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
@@ -259,7 +257,7 @@ const ChatInterface = ({ user, currentMood }) => {
       {/* Input Area */}
       <InputArea onSendMessage={handleSendMessage} isLoading={isLoading} />
       
-      {/* ✅ NEW: Floating Clear Button (appears when scrolled up) */}
+      {/* Floating Clear Button (appears when scrolled up) */}
       {messages.length > 5 && (
         <div className="absolute bottom-20 right-4">
           <button
@@ -274,7 +272,7 @@ const ChatInterface = ({ user, currentMood }) => {
         </div>
       )}
 
-      {/* ✅ NEW: Advanced Clear Chat Modal */}
+      {/* Advanced Clear Chat Modal */}
       <ClearChatModal
         isOpen={showClearModal}
         onClose={() => setShowClearModal(false)}
