@@ -16,8 +16,7 @@ function App() {
   const [currentMood, setCurrentMood] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
-  // ✅ NEW STATE: Set to TRUE by default to show the selector on first load
-  const [isMoodSelectionVisible, setIsMoodSelectionVisible] = useState(true); 
+  // REMOVED: isMoodSelectionVisible state
   
   // Initialize Guest user
   useEffect(() => {
@@ -32,16 +31,15 @@ function App() {
     setCurrentMood(null);
     setIsSidebarOpen(false);
     setShowBreathingExercise(false);
-    // ✅ Make visible on logout
-    setIsMoodSelectionVisible(true); 
+    // Setting currentMood to null ensures the selector reappears on logout
     
     alert("Logged out of existing session. You are now logged in as 'Guest'.");
   };
 
   const handleMoodSelect = (mood) => {
-    setCurrentMood(mood);
-    // ✅ HIDE selector immediately after mood is selected
-    setIsMoodSelectionVisible(false); 
+    // 1. Set the mood
+    setCurrentMood(mood); 
+    // 2. The component will now automatically hide because currentMood is no longer null.
     
     if (!user?.email) return;
     
@@ -57,9 +55,9 @@ function App() {
   };
   
   const handleMoodReset = () => {
+    // 1. Set mood to null
     setCurrentMood(null);
-    // ✅ SHOW selector when mood is reset
-    setIsMoodSelectionVisible(true); 
+    // 2. This single action is enough to make the selector visible again.
   };
 
   const toggleSidebar = () => {
@@ -115,8 +113,8 @@ function App() {
           {/* Main content area */}
           <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? 'md:ml-0 md:mr-80' : 'ml-0 mr-0'}`}>
             
-            {/* ✅ SIMPLIFIED LOGIC: Show Mood Selector only if state is true */}
-            {isMoodSelectionVisible && (
+            {/* ✅ FINAL SIMPLIFIED LOGIC: Show Mood Selector ONLY if currentMood is null */}
+            {!currentMood && (
               <div className="bg-white border-b border-gray-200 p-4">
                 <MoodSelector onMoodSelect={handleMoodSelect} />
               </div>
