@@ -1,12 +1,24 @@
 import React from 'react';
 
-const Header = ({ user, onLogout, currentMood }) => {
+// Added onToggleSidebar prop
+const Header = ({ user, onLogout, onToggleSidebar, currentMood }) => {
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="fixed w-full top-0 bg-white shadow-md border-b border-gray-200 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
+            {/* Sidebar Toggle Button for Mobile/Desktop */}
+            <button
+              onClick={onToggleSidebar}
+              className="p-2 mr-2 text-gray-600 hover:text-indigo-600 transition-colors md:hidden"
+              title="Toggle Wellness Panel"
+            >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            
             <div className="flex-shrink-0">
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">🤗</span>
@@ -24,7 +36,7 @@ const Header = ({ user, onLogout, currentMood }) => {
             {currentMood && (
               <div className="hidden sm:flex items-center space-x-2 bg-gray-50 rounded-full px-3 py-1">
                 <span className="text-lg">{currentMood.emoji}</span>
-                <span className="text-sm text-gray-600">Feeling {currentMood.label}</span>
+                <span className="text-sm text-gray-600">Feeling {currentMood.name}</span>
               </div>
             )}
 
@@ -33,7 +45,7 @@ const Header = ({ user, onLogout, currentMood }) => {
               <div className="flex items-center space-x-3">
                 <div className="hidden sm:block text-right">
                   <p className="text-sm font-medium text-gray-800">
-                    Welcome back, {user.name}!
+                    Welcome, {user.name}!
                   </p>
                   <p className="text-xs text-gray-500">
                     {new Date().toLocaleDateString('en-US', {
@@ -62,6 +74,17 @@ const Header = ({ user, onLogout, currentMood }) => {
                 </button>
               </div>
             )}
+            
+            {/* Sidebar Toggle Button for Desktop */}
+            <button
+              onClick={onToggleSidebar}
+              className="p-2 text-gray-600 hover:text-indigo-600 transition-colors hidden md:block"
+              title="Toggle Wellness Panel"
+            >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -71,7 +94,7 @@ const Header = ({ user, onLogout, currentMood }) => {
         <div className="sm:hidden bg-gray-50 px-4 py-2 border-t border-gray-100">
           <div className="flex items-center justify-center space-x-2">
             <span className="text-lg">{currentMood.emoji}</span>
-            <span className="text-sm text-gray-600">Currently feeling {currentMood.label}</span>
+            <span className="text-sm text-gray-600">Currently feeling {currentMood.name}</span>
           </div>
         </div>
       )}
