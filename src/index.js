@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+// REMOVED: import './index.css'; 
 import App from './App';
 
 // Create root element
