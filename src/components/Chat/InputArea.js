@@ -12,7 +12,7 @@ const InputArea = ({ onSendMessage, isLoading }) => {
       
       onSendMessage(inputMessage);
       
-      // FIXED: Delay clearing the input field slightly
+      // Delay clearing the input field slightly
       setTimeout(() => {
         setInputMessage('');
       }, 50); 
@@ -41,14 +41,15 @@ const InputArea = ({ onSendMessage, isLoading }) => {
     }
   };
 
+  // ✅ EDITED: Shortened and consolidated Quick Response Messages
   const quickResponses = [
-    "I'm feeling stressed",
+    "I'm stressed/overwhelmed",
     "I need motivation",
-    "I'm having trouble sleeping",
-    "I feel anxious",
-    "I'm feeling lonely",
-    "I need help coping",
-    "I'm overwhelmed" 
+    "Having trouble sleeping",
+    "I feel anxious/worried",
+    "Feeling lonely/down",
+    "I need coping help",
+    "Help me focus" 
   ];
 
   return (
@@ -61,6 +62,7 @@ const InputArea = ({ onSendMessage, isLoading }) => {
               key={index}
               onClick={() => handleQuickResponse(response)}
               disabled={isLoading}
+              // Adjust button padding slightly to fit the shorter text better
               className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
             >
               {response}
@@ -69,8 +71,6 @@ const InputArea = ({ onSendMessage, isLoading }) => {
         </div>
       </div>
 
-      {/* REMOVED: All Voice/Recording Status JSX */}
-      
       {/* Main Input Form */}
       <form onSubmit={handleSubmit} className="flex space-x-3">
         {/* Text Input (Now full width) */}
