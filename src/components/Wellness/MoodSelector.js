@@ -6,7 +6,7 @@ const MoodSelector = ({ onMoodSelect, selectedMood }) => {
 
   const handleMoodClick = (moodKey, moodData) => {
     if (onMoodSelect) {
-      onMoodSelect(moodKey, moodData);
+      onMoodSelect(moodData); // Passes the object directly, assuming MoodSelector has access to the mood key internally
     }
   };
 
@@ -18,7 +18,8 @@ const MoodSelector = ({ onMoodSelect, selectedMood }) => {
         {Object.entries(moods).map(([moodKey, mood]) => (
           <button
             key={moodKey}
-            onClick={() => handleMoodClick(moodKey, mood)}
+            // Passing the mood object to the handler (based on previous recommendation)
+            onClick={() => handleMoodClick(mood)} 
             onMouseEnter={() => setHoveredMood(moodKey)}
             onMouseLeave={() => setHoveredMood(null)}
             className={`
@@ -31,6 +32,7 @@ const MoodSelector = ({ onMoodSelect, selectedMood }) => {
             <div className="flex flex-col items-center space-y-2">
               <span className="text-2xl">{mood.emoji}</span>
               <span className="text-sm font-medium">{mood.name}</span>
+              {/* ✅ FIX: Show description on HOVER or if the mood is CURRENTLY selected */}
               {(hoveredMood === moodKey || selectedMood === moodKey) && (
                 <p className="text-xs text-center opacity-75">
                   {mood.description}
