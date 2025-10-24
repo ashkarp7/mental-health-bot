@@ -8,7 +8,8 @@ import BreathingExercise from './components/Wellness/BreathingExercise';
 import {
   getCurrentUser,
   logoutUser,
-  getDefaultUser 
+  getDefaultUser,
+  getMoodHistory // ✅ NEW: Import for history check
 } from './services/localStorage';
 
 function App() {
@@ -16,12 +17,21 @@ function App() {
   const [currentMood, setCurrentMood] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
-  // REMOVED: isMoodSelectionVisible state
+  // ✅ NEW STATE: Flag to control initial display based on history
+  const [showInitialMoodSelector, setShowInitialMoodSelector] = useState(false); 
   
-  // Initialize Guest user
+  // Initialize Guest user and check for mood history
   useEffect(() => {
     const storedUser = getCurrentUser();
     setUser(storedUser);
+    
+    if (storedUser?.email) {
+        const history = getMoodHistory(storedUser.email);
+        // ✅ LOGIC FIX: If NO mood history exists, show the selector once.
+        if (history.length === 0) {
+            setShowInitialMoodSelector(true);
+        }
+    }
   }, []);
 
   const handleLogout = () => {
@@ -31,15 +41,16 @@ function App() {
     setCurrentMood(null);
     setIsSidebarOpen(false);
     setShowBreathingExercise(false);
-    // Setting currentMood to null ensures the selector reappears on logout
+    // ✅ Show the selector after logout, as the "new" session starts.
+    setShowInitialMoodSelector(true);
     
     alert("Logged out of existing session. You are now logged in as 'Guest'.");
   };
 
   const handleMoodSelect = (mood) => {
-    // 1. Set the mood
-    setCurrentMood(mood); 
-    // 2. The component will now automatically hide because currentMood is no longer null.
+    setCurrentMood(mood);
+    // ✅ HIDE the selector permanently after the first selection
+    setShowInitialMoodSelector(false); 
     
     if (!user?.email) return;
     
@@ -55,9 +66,9 @@ function App() {
   };
   
   const handleMoodReset = () => {
-    // 1. Set mood to null
     setCurrentMood(null);
-    // 2. This single action is enough to make the selector visible again.
+    // ✅ Show the selector only when manually reset
+    setShowInitialMoodSelector(true); 
   };
 
   const toggleSidebar = () => {
@@ -82,6 +93,9 @@ function App() {
       </div>
     );
   }
+
+  // ✅ CONTROL VARIABLE: Show the selector if currentMood is null AND the showInitial flag is true.
+  const isSelectorVisible = !currentMood && showInitialMoodSelector;
 
   return (
     <div className="App min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -113,8 +127,8 @@ function App() {
           {/* Main content area */}
           <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? 'md:ml-0 md:mr-80' : 'ml-0 mr-0'}`}>
             
-            {/* ✅ FINAL SIMPLIFIED LOGIC: Show Mood Selector ONLY if currentMood is null */}
-            {!currentMood && (
+            {/* Display Mood Selector based on combined logic */}
+            {isSelectorVisible && (
               <div className="bg-white border-b border-gray-200 p-4">
                 <MoodSelector onMoodSelect={handleMoodSelect} />
               </div>
