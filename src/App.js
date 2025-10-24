@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-// Auth imports removed
 import ChatInterface from './components/Chat/ChatInterface';
 import Header from './components/UI/Header';
 import Sidebar from './components/UI/Sidebar';
@@ -14,11 +13,11 @@ import {
 
 function App() {
   const [user, setUser] = useState(null);
-  // Removed 'currentView' state
   const [currentMood, setCurrentMood] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
-  // Removed 'isLoading' state
+  // ✅ NEW STATE: Track if a mood has been initially selected this session
+  const [hasSelectedInitialMood, setHasSelectedInitialMood] = useState(false); 
   
   // Initialize Guest user
   useEffect(() => {
@@ -27,7 +26,6 @@ function App() {
   }, []);
 
   const handleLogout = () => {
-    
     // Clear localStorage session
     logoutUser();
     
@@ -36,13 +34,15 @@ function App() {
     setCurrentMood(null);
     setIsSidebarOpen(false);
     setShowBreathingExercise(false);
+    setHasSelectedInitialMood(false); // Reset initial mood selection
     
     alert("Logged out of existing session. You are now logged in as 'Guest'.");
   };
 
-  // Handle mood selection (Logic remains the same)
   const handleMoodSelect = (mood) => {
     setCurrentMood(mood);
+    // ✅ SET INITIAL MOOD FLAG
+    setHasSelectedInitialMood(true); 
     
     if (!user?.email) return;
     
@@ -55,6 +55,13 @@ function App() {
     const existingHistory = JSON.parse(localStorage.getItem(`mood_history_${user.email}`) || '[]');
     existingHistory.push(moodEntry);
     localStorage.setItem(`mood_history_${user.email}`, JSON.stringify(existingHistory));
+  };
+  
+  // ✅ NEW FUNCTION: To reset mood selection from the Header/Chat area
+  const handleMoodReset = () => {
+    setCurrentMood(null);
+    // Note: We intentionally DO NOT reset hasSelectedInitialMood here,
+    // as we want the full selector to display ONLY at the start.
   };
 
   const toggleSidebar = () => {
@@ -70,7 +77,6 @@ function App() {
   };
 
   if (!user) {
-    // This brief loading state prevents rendering before the default user is set in useEffect
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
@@ -81,7 +87,6 @@ function App() {
     );
   }
 
-  // Only render the main application structure
   return (
     <div className="App min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <>
@@ -91,6 +96,7 @@ function App() {
           onToggleSidebar={toggleSidebar} 
           onStartBreathing={startBreathingExercise}
           currentMood={currentMood}
+          onMoodReset={handleMoodReset} // ✅ Pass reset function to Header
         />
         
         {/* Full-screen overlay for mobile sidebar */}
@@ -111,12 +117,20 @@ function App() {
           {/* Main content area */}
           <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? 'md:ml-0 md:mr-80' : 'ml-0 mr-0'}`}>
             
-            {/* Mood Selector/Prompt */}
-            {!currentMood && (
+            {/* ✅ EDITED LOGIC: Show Mood Selector only if a mood hasn't been selected yet */}
+            {!currentMood && !hasSelectedInitialMood && (
               <div className="bg-white border-b border-gray-200 p-4">
                 <MoodSelector onMoodSelect={handleMoodSelect} />
               </div>
             )}
+            
+            {/* ✅ NEW: Show Mood Selector if mood is being reset */}
+            {!currentMood && hasSelectedInitialMood && (
+              <div className="bg-white border-b border-gray-200 p-4">
+                <MoodSelector onMoodSelect={handleMoodSelect} />
+              </div>
+            )}
+
             
             <div className="flex-1 overflow-hidden">
               <ChatInterface 
